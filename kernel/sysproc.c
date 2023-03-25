@@ -10,8 +10,10 @@ uint64
 sys_exit(void)
 {
   int n;
+  char msg_buff[32];
   argint(0, &n);
-  exit(n);
+  argstr(1,msg_buff,32);
+  exit(n,msg_buff);
   return 0;  // not reached
 }
 
@@ -30,9 +32,10 @@ sys_fork(void)
 uint64
 sys_wait(void)
 {
-  uint64 p;
+  uint64 p, exit_msg;
   argaddr(0, &p);
-  return wait(p);
+  argaddr(1, &exit_msg);
+  return wait(p,exit_msg);
 }
 
 uint64
@@ -88,4 +91,11 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+// Ass1 - task 2 added syscall
+uint64
+sys_memsize(void)
+{
+  return myproc()->sz;
 }
